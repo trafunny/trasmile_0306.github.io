@@ -1,0 +1,112 @@
+/*PC*/
+@media  (min-width:1024px) {
+   
+    
+}
+
+
+
+/*mobile*/
+@media ( max-width :740px) {
+    .default {
+        max-width: none;
+        padding: 64px 16px;
+        line-height: 1.5;
+        margin: 0 auto;
+        font-family: "Lato", sans-serif;
+        overflow: hidden;
+        text-align: justify;
+    }
+    #header { 
+        overflow:hidden ;
+
+    }
+    .nav,#navmore{
+        display: block;
+        text-align: unset;
+        float:unset;
+
+    }
+    #header a[class*="nav"]:first-child{
+        display: inline-block;
+    }
+    i.ti-menu{
+        display: block;
+        position: inherit;
+        top:0;
+        right:0;
+    }
+    i.ti-menu:hover{
+        background-color: #ccc;
+        color:black;
+    }
+    i.ti-search{
+        display: none;
+    }
+    #header .subnav{
+        width: 100%;
+        position: initial;
+        background-color: #333;
+        color: white;
+        padding: 0 50px;
+        height: 45px;
+        line-height: 45px;
+    }
+    #header .subnav:hover{
+        background-color: #ccc;
+        color: black;
+    }
+    .team{
+        width:unset;
+        float: unset;
+        padding: 16px 0;
+    }
+    .place1,.place2,.place3{
+        width: unset;
+        float: unset;
+        margin-bottom: 16px;
+    }
+    .js-buy-ticket{
+        width: 100%;
+        
+    }
+    .team-contact{
+        display: block;
+        float: unset;
+        width: 100%;
+    }
+    .row1,.row2{
+        width: 100% !important;
+    }
+    .contact-items{
+        margin-bottom:8px;
+    }
+    .contact-submit{
+        width: 100%;
+    }
+
+}
+
+
+
+
+
+    
+
+    
+   
+/*tablet*/
+    @media  ( min-width:740px) and (max-width:1023px){
+    
+    
+        .default {
+            max-width: none;
+            padding: 64px 16px;
+            line-height: 1.5;
+            margin: 0 auto;
+            font-family: "Lato", sans-serif;
+            overflow: hidden;
+            text-align: justify;
+        }
+    
+    }
