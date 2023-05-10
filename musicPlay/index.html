@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w==" crossorigin="anonymous" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3844/3844724.png">
+    <link rel="stylesheet" href="./assets/style.css">
+    
+</head>
+<body>
+    <div class="player">
+        <!-- Dashboard -->
+        <div class="dashboard">
+          <!-- Header -->
+          <header>
+            <h4>Now playing:</h4>
+            <h2>String 57th & 9th</h2>
+          </header>
+      
+          <!-- CD -->
+          <div class="cd">
+            <div class="cd-thumb">
+            </div>
+          </div>
+      
+          <!-- Control -->
+          <div class="control">
+            <div class="btn btn-repeat">
+              <i class="fas fa-redo"></i>
+            </div>
+            <div class="btn btn-prev">
+              <i class="fas fa-step-backward"></i>
+            </div>
+            <div class="btn btn-toggle-play">
+              <i class="fas fa-pause icon-pause"></i>
+              <i class="fas fa-play icon-play"></i>
+            </div>
+            <div class="btn btn-next">
+              <i class="fas fa-step-forward"></i>
+            </div>
+            <div class="btn btn-random">
+              <i class="fas fa-random"></i>
+            </div>
+          </div>
+      
+          <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+      
+          <audio id="audio" src=""></audio>
+        </div>
+      
+        <!-- Playlist -->
+        <div class="playlist" >
+            
+        </div>
+      </div>
+      
+    <!-- <script src="./assets/active.js"></script> -->
+
+    <script>
+      // 1. render song
+      // 2. Scroll top 
+      // 3. Play/ pause / seek 
+      // 4. CD rotate 
+      // 5. Next / Prev 
+      // 6. Random 
+      // 7. Next / Repeat when  ended 
+      // 8. Active Song 
+      // 9. Scroll active song into view 
+      // 10. Play song when click 
+
+
+        const $ = document.querySelector.bind(document)
+        const $$ = document.querySelectorAll.bind(document)
+        const heading = $('header h2')
+        const cdThumb = $('.cd .cd-thumb')
+        const audio = $('#audio')
+        const player = $('.player') 
+        const pauseBtn = $('.btn-toggle-play')
+        const progress = $('#progress')
+        const nextBtn = $('.btn-next')
+        const prevBtn = $('.btn-prev')
+        const ranBtn = $('.btn-random')
+        const repeatBtn = $('.btn-repeat')
+        
+
+
+        const app = {
+            currentIndex : 0,
+            isPause : true ,
+            isRandom : false ,
+            isRepeat : false ,
+            isActiveSong : true,
+             
+            songs : [
+                {
+                name: "Click Pow Get Down",
+                singer: "Raftaar x Fortnite",
+                path: "https://mp3.filmisongs.com/go.php?id=Damn%20Song%20Raftaar%20Ft%20KrSNa.mp3",
+                image: "https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg"
+                },
+                {
+                name: "Run Back to Me",
+                singer: "Raftaar x Salim Merchant x Karma",
+                path: "./assets/mp3/Nhac-Chuong-Chay-Ve-Noi-Phia-Anh-Khac-Viet.mp3",
+                image:
+                    "https://1.bp.blogspot.com/-kX21dGUuTdM/X85ij1SBeEI/AAAAAAAAKK4/feboCtDKkls19cZw3glZWRdJ6J8alCm-gCNcBGAsYHQ/s16000/Tu%2BAana%2BPhir%2BSe%2BRap%2BSong%2BLyrics%2BBy%2BRaftaar.jpg"
+                },
+                {
+                name: "You Are The Best Bride",
+                singer: "Raftaar x Brobha V",
+                path:
+                    "./assets/mp3/EmLaCoDauDepNhat-ChauKhaiPhong-4447114.mp3",
+                image: "https://i.ytimg.com/vi/QvswgfLDuPg/maxresdefault.jpg"
+                },
+                {
+                name: "Mantoiyat",
+                singer: "Forward to my direction",
+                path: "./assets/mp3/Nhac-Chuong-Chay-Ve-Noi-Phia-Anh-Khac-Viet.mp3",
+                image:
+                    "https://a10.gaanacdn.com/images/song/39/24225939/crop_480x480_1536749130.jpg"
+                },
+                {
+                name: "The best bride is darling ",
+                singer: "Raftaar",
+                path: "./assets/mp3/EmLaCoDauDepNhat-ChauKhaiPhong-4447114.mp3",
+                image:
+                    "https://a10.gaanacdn.com/images/albums/72/3019572/crop_480x480_3019572.jpg"
+                },
+                {
+                name: "Damn",
+                singer: "Raftaar x kr$na",
+                path:
+                    "https://mp3.filmisongs.com/go.php?id=Damn%20Song%20Raftaar%20Ft%20KrSNa.mp3",
+                image:
+                    "https://th.bing.com/th/id/R.6c6b24cc13711c81b8195195207f1143?rik=hjdqSBYcOWjO6A&riu=http%3a%2f%2fpulpbits.net%2fwp-content%2fuploads%2f2014%2f01%2fTabby-Cat-Images.jpg&ehk=%2fZ888cHTxBhWmeBDM7txDTST1TTI3Tf6lSCHOQO9tDg%3d&risl=&pid=ImgRaw&r=0"
+                },
+                {
+                name: "Run back to me",
+                singer: "Raftaar x Harjas",
+                path: "./assets/mp3/Nhac-Chuong-Chay-Ve-Noi-Phia-Anh-Khac-Viet.mp3",
+                image:
+                    "https://a10.gaanacdn.com/gn_img/albums/YoEWlabzXB/oEWlj5gYKz/size_xxl_1586752323.webp"
+                }
+            ],
+                 
+            render: function(){
+              const htmls = this.songs.map( (song,index) =>{
+                return `
+                    <div class = "song song${index}">
+                        <div class = "thumb"
+                             style = "background-image: url('${song.image}')">
+                        </div>
+                        <div class = "body" >
+                            <h3 class ="title "> ${song.name}</h3>
+                            <p class = "author" > Ca si ${song.name} </p>
+                        </div>
+                        <div class ="option">
+                            <i class = "fa fa-ellipsis-h"></i>
+                        </div>
+                    </div>
+                `
+              })
+              
+              $('.playlist').innerHTML = htmls.join('')
+
+
+            },
+
+            handleEvents : function(){
+              const cd = $('.cd')
+              const cdWidth = cd.offsetWidth
+
+            //CD rotate
+               const cdThumbAnimate = cdThumb.animate([{ transform: "rotate(360deg)" }], {
+              duration: 10000, // 10 seconds
+              iterations: Infinity
+              });
+              cdThumbAnimate.pause();
+
+            //Xử lí phóng to thu nhỏ 
+              document.onscroll = function(){
+                const scrollTop = window.scrollY || document.documentElement.scrollTop
+                const newCdWidth = cdWidth - scrollTop
+                
+                cd.style.width = newCdWidth>0 ? newCdWidth +'px' : 0
+                cd.style.opacity = newCdWidth/cdWidth 
+
+              }
+
+            //Xử lí nút Pause
+              pauseBtn.onclick = function(){
+                if(!player.classList.contains('playing')){
+                    audio.play()
+                    player.classList.add('playing')
+                    cdThumbAnimate.play()
+                    
+                }else{
+                  audio.pause()
+                  player.classList.remove('playing')
+                  cdThumbAnimate.pause() 
+              }
+            }
+
+            //Xử lí khi tiến trình bài hát chạy 
+              audio.ontimeupdate = function(){
+                if(audio.duration){
+                  const progressPercent = Math.floor((audio.currentTime / audio.duration) *100)
+                  progress.value = progressPercent
+                }
+              }
+
+            //Process when seek
+              progress.onchange =  function(e){
+                  const seekTime = e.target.value /100 * audio.duration
+                  audio.currentTime = seekTime                
+              }
+
+            // Next song
+              nextBtn.onclick = function(){
+                const verBackSong = app.currentIndex
+                progress.value = 0 
+                app.activeSong()
+                if(app.isRandom){
+                  do{
+                    app.currentIndex = Math.floor(Math.random()*app.songs.length)
+                  }while(verBackSong == app.currentIndex)
+                }
+                else{
+                  ++app.currentIndex
+                } 
+                
+                if(app.currentIndex >= app.songs.length ){
+                  app.currentIndex =0 ;
+                }
+              app.loadCurentSong();
+              
+              if(player.classList.contains('playing')){
+                audio.play()
+
+              }
+
+              }
+
+            //Prev Song
+              prevBtn.onclick = function(){
+                const verBackSong = app.currentIndex
+                progress.value = 0 
+                app.activeSong()
+                if(app.isRandom){
+                  do{
+                    app.currentIndex = Math.floor(Math.random()*app.songs.length)
+                  }while(verBackSong == app.currentIndex)
+                }
+                else{
+                  --app.currentIndex
+                } 
+                if(app.currentIndex <0) app.currentIndex = app.songs.length-1
+                app.loadCurentSong()
+                
+                if(player.classList.contains('playing')) audio.play()
+                  
+              }
+
+            //Turn on Random button
+              ranBtn.onclick = function(){
+                if(app.isRandom) {
+                  app.isRandom = false
+                  ranBtn.classList.remove('active')
+                }else{
+                  app.isRandom = true
+                  ranBtn.classList.add('active')
+                  // app.currentIndex = Math.random()*app.songs.length 
+                }
+              }
+
+            //Turn on Repeat Buton
+              repeatBtn.onclick = function(){
+                if(app.isRepeat){
+                  repeatBtn.classList.remove('active')
+                  app.isRepeat = false
+                }else{
+                  repeatBtn.classList.add('active')
+                  app.isRepeat = true
+                }
+              }
+
+            //next song when ended
+              audio.onended = function(){
+                if(app.isRepeat){
+                  audio.play()
+                }
+                else{
+                  nextBtn.click() 
+
+                }
+              }
+
+
+            },
+
+            defineProperties : function(){
+              Object.defineProperty(this , 'currentSong', {
+                get : function(){
+                  return this.songs[this.currentIndex]
+                }
+
+              })   
+
+            },
+             
+            loadCurentSong : function(){
+              heading.textContent = this.currentSong.name
+              cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`
+              audio.src = this.currentSong.path
+              this.activeSong()
+              
+            },
+
+            activeSong : function(){
+              
+              const activeSongTag = $(`.song${app.currentIndex}`)
+              // if(activeSongTag.classList.contains('active')){
+              //   activeSongTag.classList.remove('active')
+              // }else{
+              //   activeSongTag.classList.add('active')
+              // }
+              activeSongTag.classList.toggle('active', app.isActiveSong)
+              app.isActiveSong = !app.isActiveSong
+
+            },
+
+            playClickedSong : function(){
+              const songs = $$('.song')
+              let arrSongs = [...new Set(songs)]
+              
+              arrSongs.forEach((element,index) => {
+                element.onclick = function(){
+                  app.activeSong()
+                  app.currentIndex = index
+                  app.loadCurentSong()
+                  if(player.classList.contains('playing')){
+                    audio.play()
+                  }else{
+                    pauseBtn.click()
+                  }
+                 
+                }
+                
+              });
+            },
+
+
+            start : function(){
+              this.render()
+              this.playClickedSong()
+              this.defineProperties()
+              this.handleEvents()
+              this.loadCurentSong()
+              
+
+
+            }
+        }
+
+        app.start()
+
+
+    </script>
+</body>
+</html> 
